@@ -1,12 +1,5 @@
 package com.powernode.p2p.myutils;
 
-import com.aliyuncs.CommonRequest;
-import com.aliyuncs.CommonResponse;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.http.MethodType;
-import com.aliyuncs.profile.DefaultProfile;
 import com.powernode.p2p.exception.ResultException;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -65,27 +58,27 @@ public class UserUtils {
         return result;
     }
 
-    public static String verifyCode(String phone){
-        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4GFDV4wQqVK9nUEjjNuA", "uLOVkjgNUqQkWjUBJziPCaf2JnnhEx");
-        IAcsClient client = new DefaultAcsClient(profile);
+    public static String messageCode(String phone){
+//        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4GFDV4wQqVK9nUEjjNuA", "uLOVkjgNUqQkWjUBJziPCaf2JnnhEx");
+//        IAcsClient client = new DefaultAcsClient(profile);
         String scode = String.valueOf(new Random().nextInt(899999) + 100000);
 //        int code=(int)(Math.random()*100000);
-        CommonRequest request = new CommonRequest();
-        request.setSysMethod(MethodType.POST);
-        request.setSysDomain("dysmsapi.aliyuncs.com");
-        request.setSysVersion("2017-05-25");
-        request.setSysAction("SendSms");
-        request.putQueryParameter("RegionId", "cn-hangzhou");
-        request.putQueryParameter("PhoneNumbers", phone);
-        request.putQueryParameter("SignName", "AlanLin");
-        request.putQueryParameter("TemplateCode", "SMS_201455240");
-        request.putQueryParameter("TemplateParam", "{\"code\":"+scode+"}");
-        try {
-            CommonResponse response = client.getCommonResponse(request);
-            System.out.println(response.getData());
-        } catch (ClientException e) {
-            throw new ResultException(ResultEnum.INTERNAL_ERRO);
-        }
+//        CommonRequest request = new CommonRequest();
+//        request.setSysMethod(MethodType.POST);
+//        request.setSysDomain("dysmsapi.aliyuncs.com");
+//        request.setSysVersion("2017-05-25");
+//        request.setSysAction("SendSms");
+//        request.putQueryParameter("RegionId", "cn-hangzhou");
+//        request.putQueryParameter("PhoneNumbers", phone);
+//        request.putQueryParameter("SignName", "AlanLin");
+//        request.putQueryParameter("TemplateCode", "SMS_201455240");
+//        request.putQueryParameter("TemplateParam", "{\"code\":"+scode+"}");
+//        try {
+//            CommonResponse response = client.getCommonResponse(request);
+//            System.out.println(response.getData());
+//        } catch (ClientException e) {
+//            throw new ResultException(ResultEnum.INTERNAL_ERRO);
+//        }
         return scode;
     }
 }

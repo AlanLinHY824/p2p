@@ -1,5 +1,7 @@
 package com.powernode.p2p.service;
 
+import com.powernode.p2p.model.UUser;
+
 /**
  * @Author AlanLin
  * @Description
@@ -14,4 +16,5 @@ public interface UserService {
 
     Boolean checkPhone(String phone);
 
+    UUser register(String phone, String loginPassword);
 }

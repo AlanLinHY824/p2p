@@ -16,4 +16,5 @@ public class MyConstants {
     public final static String PAGEMODEL="pageModel";
     public final static String BLOANINFOBYID="bLoanInfoById";
     public final static String BBIDINFOS="bBidInfos";
+    public final static Double BONUS=888d;
 }

@@ -3,9 +3,10 @@ package com.powernode.p2p.mapper;
 import com.powernode.p2p.model.UFinanceAccount;
 import com.powernode.p2p.model.UFinanceAccountExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface UFinanceAccountMapper {
     int countByExample(UFinanceAccountExample example);
 

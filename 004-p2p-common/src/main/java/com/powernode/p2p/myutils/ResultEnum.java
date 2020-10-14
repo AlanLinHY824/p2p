@@ -10,8 +10,10 @@ public enum ResultEnum {
     SUCCESS("执行成功",200),
     NOT_FOUND("未找到数据",1001),
     PHONE_EXISTS("该手机号已被注册",1002),
-    ID_INCONSISTENT("身份验证未通过",1002),
-    INTERNAL_ERRO("服务器繁忙",500);
+    MESSAGECODE_EXPIRE("验证码已过期",1003),
+    MESSAGECODE_ERROR("验证码错误",1004),
+    ID_INCONSISTENT("身份验证未通过",1005),
+    INTERNAL_ERRO("服务器繁忙，请稍后再试",500);
 
     /**
      * 结果信息

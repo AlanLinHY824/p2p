@@ -110,7 +110,7 @@
       #{name,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, 
       #{lastLoginTime,jdbcType=TIMESTAMP}, #{headerImage,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.powernode.p2p.model.UUser" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.powernode.p2p.model.UUser" >
     insert into u_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
