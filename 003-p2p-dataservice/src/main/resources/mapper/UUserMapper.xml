@@ -11,6 +11,22 @@
     <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
     <result column="header_image" property="headerImage" jdbcType="VARCHAR" />
   </resultMap>
+
+  <resultMap id="UUserVoResultMap" type="com.powernode.p2p.vo.UUserVo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="login_password" property="loginPassword" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="id_card" property="idCard" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
+    <result column="header_image" property="headerImage" jdbcType="VARCHAR" />
+    <association property="uFinanceAccount" javaType="com.powernode.p2p.model.UFinanceAccount">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="uid" property="uid" jdbcType="INTEGER" />
+      <result column="available_money" property="availableMoney" jdbcType="DOUBLE" />
+    </association>
+  </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -177,7 +193,10 @@
     <select id="selectUserByPhone" resultType="java.lang.Boolean">
       <![CDATA[select count(1) from u_user where phone=#{phone}]]>
     </select>
-    <update id="updateByExampleSelective" parameterType="map" >
+  <select id="selectByPhoneAndPwd" resultMap="UUserVoResultMap">
+    select u.*,f.id fid,f.uid,f.available_money from u_user u join u_finance_account f on u.id=f.uid where u.phone=#{phone} and u.login_password=#{loginPassword}
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
     update u_user
     <set >
       <if test="record.id != null" >

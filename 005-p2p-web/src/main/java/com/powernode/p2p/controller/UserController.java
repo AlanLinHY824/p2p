@@ -1,12 +1,13 @@
 package com.powernode.p2p.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.powernode.p2p.constants.MyConstants;
 import com.powernode.p2p.exception.ResultException;
-import com.powernode.p2p.model.UUser;
 import com.powernode.p2p.myutils.Result;
 import com.powernode.p2p.myutils.ResultEnum;
 import com.powernode.p2p.myutils.UserUtils;
 import com.powernode.p2p.service.UserService;
+import com.powernode.p2p.vo.UUserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ public class UserController {
     @ResponseBody
     public Result messageCode(String phone, HttpSession session){
         String scode = UserUtils.messageCode(phone);
-        session.setAttribute("messageCode",scode);
+        session.setAttribute(MyConstants.MESSAGECODE,scode);
         return Result.SUCCESS();
     }
 
@@ -54,14 +55,39 @@ public class UserController {
                             @RequestParam(value = "loginPassword",required = true) String loginPassword,
                             @RequestParam(value = "messageCode",required = true) String messageCode,
                            HttpSession session){
-        String messageCodeRight = (String)session.getAttribute("messageCode");
+        String messageCodeRight = (String)session.getAttribute(MyConstants.MESSAGECODE);
         if (messageCodeRight==null){
             throw new ResultException(ResultEnum.MESSAGECODE_EXPIRE);
         }
         if (!messageCodeRight.equals(messageCode)){
             throw new ResultException(ResultEnum.MESSAGECODE_ERROR);
         }
-        UUser user=userService.register(phone,loginPassword);
+        UUserVo user=userService.register(phone,loginPassword);
+        session.setAttribute(MyConstants.USER_SESSION, user);
         return Result.SUCCESS();
     }
+
+    @GetMapping("/loan/page/login")
+    public String login(){
+        return "login";
+    }
+
+    @PostMapping("/loan/page/login")
+    @ResponseBody
+    public Result login(@RequestParam(value = "phone",required = true) String phone,
+                        @RequestParam(value = "loginPassword",required = true) String loginPassword,
+                        @RequestParam(value = "captcha",required = true) String captcha,
+                        HttpSession session){
+//        String captchaRight = (String)session.getAttribute("captcha");
+//        if (captchaRight==null){
+//            throw new ResultException(ResultEnum.MESSAGECODE_EXPIRE);
+//        }
+//        if (!captchaRight.equals(captcha)){
+//            throw new ResultException(ResultEnum.MESSAGECODE_ERROR);
+//        }
+        UUserVo user=userService.login(phone,loginPassword);
+        session.setAttribute(MyConstants.USER_SESSION, user);
+        return Result.SUCCESS();
+    }
+
 }

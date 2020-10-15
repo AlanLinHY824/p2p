@@ -2,6 +2,7 @@ package com.powernode.p2p.mapper;
 
 import com.powernode.p2p.model.UUser;
 import com.powernode.p2p.model.UUserExample;
+import com.powernode.p2p.vo.UUserVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -34,4 +35,6 @@ public interface UUserMapper {
     Long selectUserCount();
 
     Boolean selectUserByPhone(String phone);
+
+    List<UUserVo> selectByPhoneAndPwd(String phone, String loginPassword);
 }

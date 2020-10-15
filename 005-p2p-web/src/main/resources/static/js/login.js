@@ -16,3 +16,50 @@ $(document).keyup(function(event){
 		login();
 	}
 });
+
+//错误提示
+function showError(id,msg) {
+	$("#"+id+"Ok").hide();
+	$("#"+id+"Err").html("<i></i><p>"+msg+"</p>");
+	$("#"+id+"Err").show();
+	$("#"+id).addClass("input-red");
+}
+//错误隐藏
+function hideError(id) {
+	$("#"+id+"Err").hide();
+	$("#"+id+"Err").html("");
+	$("#"+id).removeClass("input-red");
+}
+//显示成功
+function showSuccess(id) {
+	$("#"+id+"Err").hide();
+	$("#"+id+"Err").html("");
+	$("#"+id+"Ok").show();
+	$("#"+id).removeClass("input-red");
+}
+
+function login() {
+	hideError("phone");
+	hideError("loginPassword");
+	$.ajax({
+		url:"/005-p2p-web/loan/page/login",
+		data:{phone:$("#phone").val(),
+			loginPassword:$("#loginPassword").val(),
+			captcha:$("#captcha").val()},
+		type:"post",
+		success:function (data) {
+			if (data.code==200){
+				window.location.href="/005-p2p-web/index";
+			}else if (data.code==1006){
+				showError("phone",data.message);
+			}else if (data.code==1007){
+				showError("loginPassword",data.message);
+			} else {
+				alert("服务器繁忙，请稍后再试")
+			}
+		},
+		error:function () {
+			showError("phone","服务器繁忙，请稍后再试");
+		}
+	})
+}

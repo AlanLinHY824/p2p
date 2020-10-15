@@ -13,6 +13,8 @@ public enum ResultEnum {
     MESSAGECODE_EXPIRE("验证码已过期",1003),
     MESSAGECODE_ERROR("验证码错误",1004),
     ID_INCONSISTENT("身份验证未通过",1005),
+    USER_NOT_FOUND("用户不存在",1006),
+    PASSWORD_ERRO("登录密码错误",1007),
     INTERNAL_ERRO("服务器繁忙，请稍后再试",500);
 
     /**

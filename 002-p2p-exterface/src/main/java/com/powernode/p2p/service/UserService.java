@@ -1,6 +1,6 @@
 package com.powernode.p2p.service;
 
-import com.powernode.p2p.model.UUser;
+import com.powernode.p2p.vo.UUserVo;
 
 /**
  * @Author AlanLin
@@ -16,5 +16,7 @@ public interface UserService {
 
     Boolean checkPhone(String phone);
 
-    UUser register(String phone, String loginPassword);
+    UUserVo register(String phone, String loginPassword);
+
+    UUserVo login(String phone, String loginPassword);
 }

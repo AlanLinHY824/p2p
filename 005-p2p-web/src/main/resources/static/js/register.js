@@ -50,16 +50,16 @@ $(function() {
 		phone_tag=0;
 		hideError("phone");
 		var phone=$("#phone").val();
-		if (!/^1[1-9]\\d{9}$/.test(phone)){
+		if (!/^1[1-9]\d{9}$/.test(phone)){
 			showError("phone","请输入正确格式的手机号！");
 		}else {
 			$.ajax({
-				url:"/loan/page/checkPhone",
+				url:"/005-p2p-web/loan/page/checkPhone",
 				data:{phone:phone},
 				type:"get",
-				async:true,
+				async:false,
 				success:function (data) {
-					if (data.code==1001){
+					if (data.code==200){
 						showSuccess("phone");
 						phone_tag=1;
 					}else {
@@ -89,15 +89,21 @@ $(function() {
 
 	$("#messageCodeBtn").click(function () {
 		$("#phone").blur();
-		if (phone_tag==1){
-			settime($("#messageCodeBtn"));
+		$("#loginPassword").blur();
+		console.log("phone_tag--"+phone_tag)
+		console.log("loginPassword_tag--"+loginPassword_tag)
+		if (phone_tag!=1||loginPassword_tag!=1){
+			alert("终止")
+			return;
 		}
+		settime($("#messageCodeBtn"));
+		var phone=$("#phone").val();
 		$.ajax({
-			url:"/loan/page/messageCode",
+			url:"/005-p2p-web/loan/page/messageCode",
 			data:{phone:phone},
 			type:"get",
 			success:function (data) {
-				if (data.code==1001){
+				if (data.code==200){
 					showSuccess("phone");
 					phone_tag=1;
 				}else {
@@ -116,17 +122,20 @@ $(function() {
 		$("#loginPassword").blur();
 		if (phone_tag==1&&loginPassword_tag==1){
 			$.ajax({
-				url:"",
+				url:"/005-p2p-web/loan/page/register",
 				data:{phone:$("#phone").val(),
 					loginPassword:$("#loginPassword").val(),
 					messageCode:$("#messageCode").val()},
 				type:"post",
-				success:function () {
-					if (data.code==1001){
-						window.location.href=[[${#request.getContextPath()}]]+"/index";
+				success:function (data) {
+					if (data.code==200){
+						window.location.href="/005-p2p-web/index";
 					}else {
-						alert("注册失败，请稍后再试")
+						alert("服务器繁忙，请稍后再试")
 					}
+				},
+				error:function () {
+					showError("phone","服务器繁忙，请稍后再试");
 				}
 			})
 		}
@@ -138,12 +147,12 @@ var countdown=60;
 function settime(obj) {
 	if (countdown == 0) {
 		obj.removeAttr("disabled");
-		obj.val("免费获取验证码");
+		obj.val("获取验证码");
 		countdown = 60;
 		return;
 	} else {
 		obj.attr("disabled", true);
-		obj.val("重新发送(" + countdown + ")");
+		obj.text("重新发送(" + countdown + ")");
 		countdown--;
 	}
 	setTimeout(function() {

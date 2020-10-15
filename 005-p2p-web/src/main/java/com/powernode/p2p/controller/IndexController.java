@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class IndexController {
      * @return
      */
     @RequestMapping("/index")
-    public String index(Model model){
+    public String index(Model model, HttpSession session){
         //查询历史平均利率
         Double hisAvgRate = loanService.queryHisAvgRate();
         model.addAttribute(MyConstants.HISAVGRATE,hisAvgRate);

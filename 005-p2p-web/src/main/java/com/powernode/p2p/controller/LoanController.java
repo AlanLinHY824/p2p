@@ -34,7 +34,7 @@ public class LoanController {
                        @RequestParam(value = "ptype",required = false) Integer ptype,
                        @RequestParam(value = "currentPage",defaultValue = "1") Integer currentPage,
                        HttpSession session){
-        PageModel pageModel=(PageModel)session.getAttribute("pageModel");
+        PageModel pageModel=(PageModel)session.getAttribute(MyConstants.PAGEMODEL);
         if(pageModel==null){
             pageModel=new PageModel();
             session.setAttribute(MyConstants.PAGEMODEL,pageModel);
@@ -76,7 +76,7 @@ public class LoanController {
         Integer bidCount=loanService.queryBidCountByLoanId(loanId);
         pageModel.setTotalRecordCounts(bidCount);
         Map<String,Object> map=new HashMap<>();
-        map.put("pageModel",pageModel);
+        map.put(MyConstants.PAGEMODEL,pageModel);
         map.put("bBidInfos",bBidInfos);
         return map;
     }
