@@ -6,11 +6,12 @@ import com.powernode.p2p.exception.ResultException;
 import com.powernode.p2p.mapper.UFinanceAccountMapper;
 import com.powernode.p2p.mapper.UUserMapper;
 import com.powernode.p2p.model.UFinanceAccount;
+import com.powernode.p2p.model.UFinanceAccountExample;
 import com.powernode.p2p.model.UUser;
 import com.powernode.p2p.model.UUserExample;
 import com.powernode.p2p.myutils.ResultEnum;
-import com.powernode.p2p.vo.UUserVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UFinanceAccountMapper accountMapper;
 
+    @Autowired
+    private  RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public Long queryUserCount() {
         return userMapper.selectUserCount();
@@ -44,22 +48,35 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public UUserVo register(String phone, String loginPassword) {
+    public UUser register(String phone, String loginPassword) {
+        //添加用户
         UUser uUser = new UUser();
         uUser.setAddTime(new Date());
         uUser.setLoginPassword(loginPassword);
         uUser.setPhone(phone);
         userMapper.insertSelective(uUser);
+        //添加账户并绑定用户id
         UFinanceAccount uFinanceAccount = new UFinanceAccount();
         uFinanceAccount.setAvailableMoney(MyConstants.BONUS);
         uFinanceAccount.setUid(uUser.getId());
         accountMapper.insertSelective(uFinanceAccount);
-        List<UUserVo> uUserVos = userMapper.selectByPhoneAndPwd(phone, loginPassword);
-        return uUserVos.get(0);
+        return uUser;
     }
 
     @Override
-    public UUserVo login(String phone, String loginPassword) {
+    public UFinanceAccount queryAccount(Integer id) {
+        UFinanceAccountExample uFinanceAccountExample = new UFinanceAccountExample();
+        UFinanceAccountExample.Criteria criteria = uFinanceAccountExample.createCriteria();
+        criteria.andUidEqualTo(id);
+        List<UFinanceAccount> uFinanceAccounts = accountMapper.selectByExample(uFinanceAccountExample);
+        if (uFinanceAccounts==null&&uFinanceAccounts.size()==0){
+            throw new ResultException(ResultEnum.NOT_FOUND);
+        }
+        return uFinanceAccounts.get(0);
+    }
+
+    @Override
+    public UUser login(String phone, String loginPassword) {
         UUserExample uUserExample = new UUserExample();
         UUserExample.Criteria criteria = uUserExample.createCriteria();
         criteria.andPhoneEqualTo(phone);
@@ -67,10 +84,16 @@ public class UserServiceImpl implements UserService{
         if (uUsers==null||uUsers.size()==0){
             throw new ResultException(ResultEnum.USER_NOT_FOUND);
         }
-        List<UUserVo> uUserVos = userMapper.selectByPhoneAndPwd(phone,loginPassword);
-        if (uUserVos==null||uUserVos.size()==0){
+        criteria.andLoginPasswordEqualTo(loginPassword);
+        uUsers = userMapper.selectByExample(uUserExample);
+        if (uUsers==null||uUsers.size()==0){
             throw new ResultException(ResultEnum.PASSWORD_ERRO);
         }
-        return uUserVos.get(0);
+        return uUsers.get(0);
+    }
+
+    @Override
+    public Integer putIdAndRealName(UUser user) {
+        return userMapper.updateByPrimaryKeySelective(user);
     }
 }

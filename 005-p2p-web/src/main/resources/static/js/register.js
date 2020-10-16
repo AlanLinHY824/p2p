@@ -46,6 +46,7 @@ $(function() {
 
 	var phone_tag=0;
 	var loginPassword_tag=0;
+	var messageCode_tag=0;
 	$("#phone").blur(function () {
 		phone_tag=0;
 		hideError("phone");
@@ -90,10 +91,7 @@ $(function() {
 	$("#messageCodeBtn").click(function () {
 		$("#phone").blur();
 		$("#loginPassword").blur();
-		console.log("phone_tag--"+phone_tag)
-		console.log("loginPassword_tag--"+loginPassword_tag)
 		if (phone_tag!=1||loginPassword_tag!=1){
-			alert("终止")
 			return;
 		}
 		settime($("#messageCodeBtn"));
@@ -116,22 +114,30 @@ $(function() {
 		})
 	});
 
-
+	function messageCode(){
+		messageCode_tag=0;
+		hideError("messageCode");
+		if ($("#messageCode").val()==""){
+			showError("messageCode","验证码不能为空")
+			messageCode_tag=1;
+		}
+	}
 	$("#btnRegist").click(function () {
 		$("#phone").blur();
 		$("#loginPassword").blur();
-		if (phone_tag==1&&loginPassword_tag==1){
+		messageCode();
+		if (phone_tag==1&&loginPassword_tag==1&&messageCode_tag==1){
 			$.ajax({
 				url:"/005-p2p-web/loan/page/register",
 				data:{phone:$("#phone").val(),
-					loginPassword:$("#loginPassword").val(),
+					loginPassword:$.md5($("#loginPassword").val()),
 					messageCode:$("#messageCode").val()},
 				type:"post",
 				success:function (data) {
 					if (data.code==200){
-						window.location.href="/005-p2p-web/index";
+						window.location.href="/005-p2p-web/loan/page/realName";
 					}else {
-						alert("服务器繁忙，请稍后再试")
+						alert(data.message);
 					}
 				},
 				error:function () {
@@ -140,7 +146,6 @@ $(function() {
 			})
 		}
 	})
-
 });
 
 var countdown=60;

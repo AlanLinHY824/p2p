@@ -1,12 +1,27 @@
 package com.powernode.p2p.myutils;
 
+
+import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.CommonRequest;
+import com.aliyuncs.CommonResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.profile.DefaultProfile;
 import com.powernode.p2p.exception.ResultException;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -48,37 +63,84 @@ public class UserUtils {
         try {
             response = client.newCall(request).execute();
             System.out.println("返回状态码" + response.code() + ",message:" + response.message());
-            result= response.body().string();
-            if (response.code()!=1){
-                throw new ResultException(ResultEnum.ID_INCONSISTENT);
+            if (response.body() == null||response.code()!=0) {
+                throw new ResultException(ResultEnum.INTERNAL_ERRO);
             }
+            result= response.body().string();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new ResultException(ResultEnum.INTERNAL_ERRO);
         }
         return result;
     }
 
     public static String messageCode(String phone){
-//        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4GFDV4wQqVK9nUEjjNuA", "uLOVkjgNUqQkWjUBJziPCaf2JnnhEx");
-//        IAcsClient client = new DefaultAcsClient(profile);
+        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4GFDV4wQqVK9nUEjjNuA", "uLOVkjgNUqQkWjUBJziPCaf2JnnhEx");
+        IAcsClient client = new DefaultAcsClient(profile);
         String scode = String.valueOf(new Random().nextInt(899999) + 100000);
 //        int code=(int)(Math.random()*100000);
-//        CommonRequest request = new CommonRequest();
-//        request.setSysMethod(MethodType.POST);
-//        request.setSysDomain("dysmsapi.aliyuncs.com");
-//        request.setSysVersion("2017-05-25");
-//        request.setSysAction("SendSms");
-//        request.putQueryParameter("RegionId", "cn-hangzhou");
-//        request.putQueryParameter("PhoneNumbers", phone);
-//        request.putQueryParameter("SignName", "AlanLin");
-//        request.putQueryParameter("TemplateCode", "SMS_201455240");
-//        request.putQueryParameter("TemplateParam", "{\"code\":"+scode+"}");
-//        try {
-//            CommonResponse response = client.getCommonResponse(request);
-//            System.out.println(response.getData());
-//        } catch (ClientException e) {
-//            throw new ResultException(ResultEnum.INTERNAL_ERRO);
-//        }
+        CommonRequest request = new CommonRequest();
+        request.setSysMethod(MethodType.POST);
+        request.setSysDomain("dysmsapi.aliyuncs.com");
+        request.setSysVersion("2017-05-25");
+        request.setSysAction("SendSms");
+        request.putQueryParameter("RegionId", "cn-hangzhou");
+        request.putQueryParameter("PhoneNumbers", phone);
+        request.putQueryParameter("SignName", "AlanLin");
+        request.putQueryParameter("TemplateCode", "SMS_201455240");
+        request.putQueryParameter("TemplateParam", "{\"code\":"+scode+"}");
+        try {
+            CommonResponse response = client.getCommonResponse(request);
+            System.out.println(response.getData());
+        } catch (ClientException e) {
+            throw new ResultException(ResultEnum.INTERNAL_ERRO);
+        }
+        return scode;
+    }
+
+    /**
+     * {
+     *     "code": "10000",
+     *     "charge": false,
+     *     "remain": 0,
+     *     "msg": "查询成功",
+     *     "result": "<?xml version=\"1.0\" encoding=\"utf-8\" ?><returnsms>\n <returnstatus>Success</returnstatus>\n <message>ok</message>\n <remainpoint>-6668822</remainpoint>\n <taskID>158738761</taskID>\n <successCounts>1</successCounts></returnsms>"
+     * }
+     * @param phone
+     * @return
+     */
+    public static String messageCodeByHttpClient(String phone){
+        String scode = String.valueOf(new Random().nextInt(899999) + 100000);
+        String url="https://way.jd.com/kaixintong/kaixintong";
+        String appkey="55baa987c158c8b45a96a04d937f4d55";
+        String mobile="mobile";
+        String content="【凯信通】您的验证码是："+scode+"，请妥善保管【5分钟内有效】";
+        Map<String,Object> map=new HashMap<>();
+        map.put("appkey",appkey);
+        map.put("mobile",mobile);
+        map.put("content",content);
+        String repsonse=null;
+        try {
+            repsonse = HttpClientUtils.doPost(url, map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JSONObject jsonObject = JSONObject.parseObject(repsonse);
+        String code = jsonObject.getString("code");
+        if (!StringUtils.equals(code, "10000")){
+            throw new ResultException(ResultEnum.EXTERNAL_CALL_ERROR);
+        }
+        Document document = null;
+        try {
+            document = DocumentHelper.parseText(jsonObject.getString("result"));
+            String returnstatus = document.selectSingleNode("returnstatus").getText();
+            if (!StringUtils.equals("Success", returnstatus)){
+                throw new ResultException(ResultEnum.MESSAGECODE_SEND_ERROR);
+            }
+        } catch ( DocumentException e) {
+            e.printStackTrace();
+            throw new ResultException(ResultEnum.EXTERNAL_CALL_ERROR);
+        }
         return scode;
     }
 }

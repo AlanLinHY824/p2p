@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -42,7 +42,7 @@
 		     <div class="login-yzm">
 		     <div id="showCaptcha" class="yzm-box" style="display:block;">
 			 	<input id="captcha" type="text" class="yzm" placeholder="点击右侧图片可刷新"/>
-			 	<img th:src="@{/jcaptcha/captcha}" id="imgCode" style="cursor:pointer;border:0; display:inline;vertical-align:middle;"/>
+			 	<img th:src="@{/jcaptcha/captcha}" onclick="getCode()" id="imgCode" style="cursor:pointer;border:0; display:inline;vertical-align:middle;"/>
 		     </div>
 		     <ul><li id="showId" style="color:red;font-size:12px;width:222px;margin-top:10px;margin-bottom:10px;line-height:18px;"></li></ul>
 		     </div>
@@ -91,4 +91,9 @@
 <div th:include="commons/footer :: html"></div>
 <!--页脚end-->
 </body>
+<script type="text/javascript" th:inline="javascript">
+    function getCode() {
+        $("#imgCode").prop("src",[[${#request.getContextPath()}]]+"/jcaptcha/captcha")
+    }
+</script>
 </html>

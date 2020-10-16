@@ -56,7 +56,7 @@ $(function(){
                     </div>
                     <div class="userinfo-drop-down" style="height: 0px;">
                         <div class="down-bk">
-                            <div class="user-balance">余额：<span id="frame_top" th:text="${#session.getAttribute('user').uFinanceAccount.availableMoney}">1000.00</span>元</div>
+                            <div class="user-balance">余额：<span id="frame_top" th:text="${#session.getAttribute('uFinanceAccount').availableMoney}">1000.00</span>元</div>
                             <ul class="quick-entry clearfix">
                                 <li class="icon-recharge"><a href="toRecharge.html"><i></i><span>充值</span></a></li>
                                 <li class="icon-invest" style="margin-left:85px;"><a href="loan/loan"><i></i><span>投资</span></a></li>

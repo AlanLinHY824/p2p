@@ -12,9 +12,11 @@ public enum ResultEnum {
     PHONE_EXISTS("该手机号已被注册",1002),
     MESSAGECODE_EXPIRE("验证码已过期",1003),
     MESSAGECODE_ERROR("验证码错误",1004),
-    ID_INCONSISTENT("身份验证未通过",1005),
-    USER_NOT_FOUND("用户不存在",1006),
-    PASSWORD_ERRO("登录密码错误",1007),
+    MESSAGECODE_SEND_ERROR("短信发送失败",1005),
+    EXTERNAL_CALL_ERROR("外部服务调用失败",1006),
+    ID_INCONSISTENT("身份验证未通过，若确认信息填写无误，请咨询公安户籍部门，谢谢！",1007),
+    USER_NOT_FOUND("用户不存在",1008),
+    PASSWORD_ERRO("登录密码错误",1009),
     INTERNAL_ERRO("服务器繁忙，请稍后再试",500);
 
     /**

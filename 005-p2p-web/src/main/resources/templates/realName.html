@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -7,6 +7,10 @@
     <script language="javascript" type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
     <script language="javascript" type="text/javascript" th:src="@{/js/realName.js}"></script>
     <title>实名认证动力金融网-动力金融网,专业的互联网金融信息服务平台</title>
+    <style type="text/css">
+        .testBtn-a{display: inline-block;height:40px;line-height:30px;padding:0 8px; border:0; border-radius:0px;color:#fff;background:rgb(65,133,244);cursor: pointer;}
+        .testBtn-a.on{background:#c9c9c9;color:#666;cursor: default;}
+    </style>
 </head>
 
 <body>
@@ -19,7 +23,7 @@
         <div class="homeWap">
             <div class="reg-step">
                 <ul class="clearfix">
-                    <li>注册</li>
+                    <li class="none">注册</li>
                     <li>实名认证</li>
                     <li class="last">完成</li>
                 </ul>
@@ -50,13 +54,14 @@
                             <div id="idCardErr" class="form-hint" style="display:none;z-index:90;"></div>
                         </div>
                         <div class="login-box clearfix" style="z-index:60;">
-                            <label>图形验证码</label>
+                            <label>手机验证码</label>
                             <div class="yzm-box">
-                                <input id="captcha" name="captcha" type="text" class="yzm" maxlength="10" placeholder="点击右侧图片可刷新" onblur="checkCaptcha();"/>
-                                <a style='cursor:pointer;'></a>
+                                <input id="messageCode" type="text" class="yzm" placeholder="获取短信验证码"/>
+                                &nbsp;&nbsp;
+                                <button type="button" class="testBtn-a" id="messageCodeBtn">获取验证码</button>
                             </div>
-                            <span id="captchaOk" class="ok" style="display:none;"></span>
-                            <div id="captchaErr" class="form-hint" style="display:none;"></div>
+                            <span id="messageCodeOk" class="ok" style="display:none;"></span>
+                            <div id="messageCodeErr" class="form-hint" style="display:none;"></div>
                         </div>
                         <div class="remember" style="z-index:60;">
                 <span class="on">
