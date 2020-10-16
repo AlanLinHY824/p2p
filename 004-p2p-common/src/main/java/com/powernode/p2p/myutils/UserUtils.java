@@ -2,13 +2,7 @@ package com.powernode.p2p.myutils;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.aliyuncs.CommonRequest;
-import com.aliyuncs.CommonResponse;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.http.MethodType;
-import com.aliyuncs.profile.DefaultProfile;
+import com.powernode.p2p.constants.MyConstants;
 import com.powernode.p2p.exception.ResultException;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -49,7 +43,7 @@ public class UserUtils {
      * @param name
      * @return
      */
-    public static String idVerify(String id,String name){
+    public static Boolean idVerify(String id,String name){
         String appCode="2278acbdd94a42d6b9e8622b42119f7d";
         String url="https://eid.shumaidata.com/eid/check";
         OkHttpClient client = new OkHttpClient.Builder().build();
@@ -63,7 +57,7 @@ public class UserUtils {
         try {
             response = client.newCall(request).execute();
             System.out.println("返回状态码" + response.code() + ",message:" + response.message());
-            if (response.body() == null||response.code()!=0) {
+            if (response.body() == null) {
                 throw new ResultException(ResultEnum.INTERNAL_ERRO);
             }
             result= response.body().string();
@@ -71,30 +65,36 @@ public class UserUtils {
             e.printStackTrace();
             throw new ResultException(ResultEnum.INTERNAL_ERRO);
         }
-        return result;
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        String res = jsonObject.getJSONObject("result").getString("res");
+        if (!StringUtils.equals(res, MyConstants.ID_RIGHT_CODE)){
+            return false;
+        }
+        return true;
     }
 
     public static String messageCode(String phone){
-        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4GFDV4wQqVK9nUEjjNuA", "uLOVkjgNUqQkWjUBJziPCaf2JnnhEx");
-        IAcsClient client = new DefaultAcsClient(profile);
+//        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4GFDV4wQqVK9nUEjjNuA", "uLOVkjgNUqQkWjUBJziPCaf2JnnhEx");
+//        IAcsClient client = new DefaultAcsClient(profile);
         String scode = String.valueOf(new Random().nextInt(899999) + 100000);
+        System.out.println("scode:"+scode);
 //        int code=(int)(Math.random()*100000);
-        CommonRequest request = new CommonRequest();
-        request.setSysMethod(MethodType.POST);
-        request.setSysDomain("dysmsapi.aliyuncs.com");
-        request.setSysVersion("2017-05-25");
-        request.setSysAction("SendSms");
-        request.putQueryParameter("RegionId", "cn-hangzhou");
-        request.putQueryParameter("PhoneNumbers", phone);
-        request.putQueryParameter("SignName", "AlanLin");
-        request.putQueryParameter("TemplateCode", "SMS_201455240");
-        request.putQueryParameter("TemplateParam", "{\"code\":"+scode+"}");
-        try {
-            CommonResponse response = client.getCommonResponse(request);
-            System.out.println(response.getData());
-        } catch (ClientException e) {
-            throw new ResultException(ResultEnum.INTERNAL_ERRO);
-        }
+//        CommonRequest request = new CommonRequest();
+//        request.setSysMethod(MethodType.POST);
+//        request.setSysDomain("dysmsapi.aliyuncs.com");
+//        request.setSysVersion("2017-05-25");
+//        request.setSysAction("SendSms");
+//        request.putQueryParameter("RegionId", "cn-hangzhou");
+//        request.putQueryParameter("PhoneNumbers", phone);
+//        request.putQueryParameter("SignName", "AlanLin");
+//        request.putQueryParameter("TemplateCode", "SMS_201455240");
+//        request.putQueryParameter("TemplateParam", "{\"code\":"+scode+"}");
+//        try {
+//            CommonResponse response = client.getCommonResponse(request);
+//            System.out.println(response.getData());
+//        } catch (ClientException e) {
+//            throw new ResultException(ResultEnum.INTERNAL_ERRO);
+//        }
         return scode;
     }
 

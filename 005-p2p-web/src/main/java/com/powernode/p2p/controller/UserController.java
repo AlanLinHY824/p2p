@@ -1,7 +1,6 @@
 package com.powernode.p2p.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.alibaba.fastjson.JSONObject;
 import com.powernode.p2p.constants.MyConstants;
 import com.powernode.p2p.exception.ResultException;
 import com.powernode.p2p.model.UFinanceAccount;
@@ -128,10 +127,8 @@ public class UserController {
             throw new ResultException(ResultEnum.MESSAGECODE_ERROR);
         }
         //调用身份验证工具
-        String result = UserUtils.idVerify(idCard, realName);
-        JSONObject jsonObject = JSONObject.parseObject(result);
-        String res = jsonObject.getString("res");
-        if (!StringUtils.equals(res, MyConstants.ID_RIGHT_CODE)){
+        Boolean result = UserUtils.idVerify(idCard, realName);
+        if (!result){
             throw new ResultException(ResultEnum.ID_INCONSISTENT);
         }
         //身份校验成功，更新身份信息

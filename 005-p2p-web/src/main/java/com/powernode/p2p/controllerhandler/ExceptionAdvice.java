@@ -19,6 +19,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public Result handlerExceptionAdvice(Exception e){
+        e.printStackTrace();
         if (e instanceof ResultException){
             ResultException exception = (ResultException) e;
             return Result.FAIL(exception);

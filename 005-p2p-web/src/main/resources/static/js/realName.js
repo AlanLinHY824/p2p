@@ -54,26 +54,10 @@ $(function() {
 		var phone=$("#phone").val();
 		if (!/^1[1-9]\d{9}$/.test(phone)){
 			showError("phone","请输入正确格式的手机号！");
-		}else {
-			$.ajax({
-				url:"/005-p2p-web/loan/page/checkPhone",
-				data:{phone:phone},
-				type:"get",
-				async:false,
-				success:function (data) {
-					if (data.code==200){
-						showSuccess("phone");
-						phone_tag=1;
-					}else {
-						showError("phone",data.message);
-						phone_tag=-1;
-					}
-				},
-				error:function () {
-					showError("phone","服务器繁忙，请稍后再试");
-				}
-			});
+			return;
 		}
+		showSuccess("phone");
+		phone_tag=1;
 	});
 
 	$("#realName").blur(function () {
@@ -135,8 +119,8 @@ $(function() {
 		hideError("messageCode");
 		if ($("#messageCode").val()==""){
 			showError("messageCode","验证码不能为空");
-			messageCode_tag=1;
 		}
+		messageCode_tag=1;
 	}
 
 	$("#btnRegist").click(function () {
@@ -144,14 +128,15 @@ $(function() {
 		$("#idCard").blur();
 		$("#realName").blur();
 		messageCode();
+		console.log(phone_tag+""+idCard_tag+""+realName_tag+""+messageCode_tag);
 		if (phone_tag!=1||idCard_tag!=1||realName_tag!=1||messageCode_tag!=1){
 			return;
 		}
 		$.ajax({
 			url:"/005-p2p-web/loan/page/realName",
 			data:{phone:$("#phone").val(),
-				realName:$.md5($("#realName").val()),
-				idCard:$.md5($("#idCard").val()),
+				realName:$("#realName").val(),
+				idCard:$("#idCard").val(),
 				messageCode:$("#messageCode").val()},
 			type:"post",
 			success:function (data) {

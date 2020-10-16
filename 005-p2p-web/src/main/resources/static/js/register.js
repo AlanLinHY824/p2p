@@ -119,8 +119,9 @@ $(function() {
 		hideError("messageCode");
 		if ($("#messageCode").val()==""){
 			showError("messageCode","验证码不能为空")
-			messageCode_tag=1;
+			messageCode_tag=-1;
 		}
+		messageCode_tag=1;
 	}
 	$("#btnRegist").click(function () {
 		$("#phone").blur();
