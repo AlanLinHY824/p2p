@@ -77,7 +77,6 @@ public class UserUtils {
 //        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4GFDV4wQqVK9nUEjjNuA", "uLOVkjgNUqQkWjUBJziPCaf2JnnhEx");
 //        IAcsClient client = new DefaultAcsClient(profile);
         String scode = String.valueOf(new Random().nextInt(899999) + 100000);
-        System.out.println("scode:"+scode);
 //        int code=(int)(Math.random()*100000);
 //        CommonRequest request = new CommonRequest();
 //        request.setSysMethod(MethodType.POST);

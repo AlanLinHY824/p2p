@@ -52,6 +52,7 @@ public class UserController {
     @ResponseBody
     public Result messageCode(String phone, HttpSession session){
         String scode = UserUtils.messageCode(phone);
+        log.info("手机号"+phone+"获取验证码:"+scode);
         redisService.set(phone, scode, 10,TimeUnit.MINUTES);
         return Result.SUCCESS();
     }

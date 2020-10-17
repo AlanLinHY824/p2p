@@ -118,7 +118,7 @@ $(function() {
 		messageCode_tag=0;
 		hideError("messageCode");
 		if ($("#messageCode").val()==""){
-			showError("messageCode","验证码不能为空")
+			showError("messageCode","验证码不能为空");
 			messageCode_tag=-1;
 		}
 		messageCode_tag=1;
@@ -130,9 +130,9 @@ $(function() {
 		if (phone_tag==1&&loginPassword_tag==1&&messageCode_tag==1){
 			$.ajax({
 				url:"/005-p2p-web/loan/page/register",
-				data:{phone:$("#phone").val(),
-					loginPassword:$.md5($("#loginPassword").val()),
-					messageCode:$("#messageCode").val()},
+				data:{phone:$.trim($("#phone").val()),
+					loginPassword:$.md5($.trim($("#loginPassword").val())),
+					messageCode:$.trim($("#messageCode").val())},
 				type:"post",
 				success:function (data) {
 					if (data.code==200){
@@ -153,7 +153,7 @@ var countdown=60;
 function settime(obj) {
 	if (countdown == 0) {
 		obj.removeAttr("disabled");
-		obj.val("获取验证码");
+		obj.text("获取验证码");
 		countdown = 60;
 		return;
 	} else {

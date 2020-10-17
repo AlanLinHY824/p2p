@@ -134,10 +134,10 @@ $(function() {
 		}
 		$.ajax({
 			url:"/005-p2p-web/loan/page/realName",
-			data:{phone:$("#phone").val(),
-				realName:$("#realName").val(),
-				idCard:$("#idCard").val(),
-				messageCode:$("#messageCode").val()},
+			data:{phone:$.trim($("#phone").val()),
+				realName:$.trim($("#realName").val()),
+				idCard:$.trim($("#idCard").val()),
+				messageCode:$.trim($("#messageCode").val())},
 			type:"post",
 			success:function (data) {
 				if (data.code==200){
@@ -158,7 +158,7 @@ var countdown=60;
 function settime(obj) {
 	if (countdown == 0) {
 		obj.removeAttr("disabled");
-		obj.val("获取验证码");
+		obj.text("获取验证码");
 		countdown = 60;
 		return;
 	} else {
