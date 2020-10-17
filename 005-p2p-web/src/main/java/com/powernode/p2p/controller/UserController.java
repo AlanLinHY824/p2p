@@ -14,6 +14,7 @@ import com.powernode.p2p.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -81,7 +82,8 @@ public class UserController {
     }
 
     @GetMapping("/loan/page/login")
-    public String login(HttpSession session){
+    public String login(HttpSession session, Model model,String redictURL){
+        model.addAttribute("redictURL", redictURL);
         return "login";
     }
 
@@ -95,7 +97,7 @@ public class UserController {
         if (captchaRedis==null){
             throw new ResultException(ResultEnum.MESSAGECODE_EXPIRE);
         }
-        if (!StringUtils.equals(captchaRedis,captcha)){
+        if (!StringUtils.equalsIgnoreCase(captchaRedis,captcha)){
             throw new ResultException(ResultEnum.MESSAGECODE_ERROR);
         }
         //验证码校验成功，调用登录服务接口
@@ -145,6 +147,16 @@ public class UserController {
         }
         return Result.SUCCESS();
     }
+    @RequestMapping("/loan/myCenter")
+    public String myCenter(HttpSession session){
+        return "myCenter";
+    }
 
+    @GetMapping("/loan/logout")
+    public String logout(HttpSession session,String redictURL){
+        session.removeAttribute(MyConstants.USER_SESSION);
+        session.removeAttribute(MyConstants.USER_ACCOUNT_SESSION);
+        return "redirect:"+redictURL;
+    }
 
 }

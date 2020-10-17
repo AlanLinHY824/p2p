@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Controller
 public class CaptchaController {
-    public static final int WIDTH = 120;
+    public static final int WIDTH = 180;
     /**
      * 图片高度：50px
      */

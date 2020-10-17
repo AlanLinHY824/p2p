@@ -10,13 +10,16 @@ import com.powernode.p2p.model.UFinanceAccountExample;
 import com.powernode.p2p.model.UUser;
 import com.powernode.p2p.model.UUserExample;
 import com.powernode.p2p.myutils.ResultEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * @Author AlanLin
@@ -32,6 +35,10 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UFinanceAccountMapper accountMapper;
+
+    @Autowired
+    @Qualifier( "taskExecutor")
+    private Executor taskExecutor;
 
     @Autowired
     private  RedisTemplate<String, Object> redisTemplate;
@@ -84,11 +91,21 @@ public class UserServiceImpl implements UserService{
         if (uUsers==null||uUsers.size()==0){
             throw new ResultException(ResultEnum.USER_NOT_FOUND);
         }
-        criteria.andLoginPasswordEqualTo(loginPassword);
-        uUsers = userMapper.selectByExample(uUserExample);
-        if (uUsers==null||uUsers.size()==0){
+        if (!StringUtils.equals(uUsers.get(0).getLoginPassword(),loginPassword)){
             throw new ResultException(ResultEnum.PASSWORD_ERRO);
         }
+        //修改登录时间，交给另外一个线程，修改不成功也没关系
+        UUser user = new UUser();
+        user.setId(uUsers.get(0).getId());
+        user.setLastLoginTime(new Date());
+        taskExecutor.execute(new Runnable(){
+            @Override
+            public void run() {
+                userMapper.updateByPrimaryKeySelective(user);
+                System.out.println("独立线程插入登录时间："+Thread.currentThread().getName());
+            }
+        });
+        System.out.println("请求主线程："+Thread.currentThread().getName());
         return uUsers.get(0);
     }
 

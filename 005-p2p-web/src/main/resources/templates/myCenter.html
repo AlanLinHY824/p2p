@@ -1,6 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -33,20 +32,19 @@
                         <span><img id="user_photo" th:src="@{/images/header.png}" width="90" height="90"/></span>
                         <a th:href="@{/loan/uploadHeader}">上传头像</a>
                     </div>
-                    <h3 class="name">
-
+                    <h3 class="name" th:text="${#session.getAttribute('user').name}">
                         <!--<a th:href="@{/loan/page/realName}">请认证姓名</a>-->
                         张三
                     </h3>
                     <h4></h4>
-                    <h4>13725698888</h4>
-                    <h4>最近登录：2017-05-21 15:23:36</h4>
+                    <h4 th:text="${#session.getAttribute('user').phone}">13725698888</h4>
+                    <h4>最近登录：</h4><h4 th:text="${#session.getAttribute('user').lastLoginTime}">2017-05-21 15:23:36</h4>
                 </div>
                 <i class="borderRight"></i>
                 <ul class="credenBalance">
                     <li class="availMoney">
                         <h3>可用余额：</h3>
-                        <span class="moneyIcon"><i>¥ 9000.0 元</i></span>
+                        <span class="moneyIcon" th:text="${#session.getAttribute('uFinanceAccount').availableMoney}"><i>¥ 9000.0 元</i></span>
                         <a class="recharge" th:href="@{/loan/page/toRecharge}">充值</a>
                         <a class="inves" th:href="@{/loan/loan}">投资</a>
                     </li>

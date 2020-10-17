@@ -55,7 +55,7 @@ $(function() {
 			showError("phone","请输入正确格式的手机号！");
 		}else {
 			$.ajax({
-				url:"/005-p2p-web/loan/page/checkPhone",
+				url:rootPath +"/loan/page/checkPhone",
 				data:{phone:phone},
 				type:"get",
 				async:false,
@@ -97,7 +97,7 @@ $(function() {
 		settime($("#messageCodeBtn"));
 		var phone=$("#phone").val();
 		$.ajax({
-			url:"/005-p2p-web/loan/page/messageCode",
+			url: rootPath +"/loan/page/messageCode",
 			data:{phone:phone},
 			type:"get",
 			success:function (data) {
@@ -129,7 +129,7 @@ $(function() {
 		messageCode();
 		if (phone_tag==1&&loginPassword_tag==1&&messageCode_tag==1){
 			$.ajax({
-				url:"/005-p2p-web/loan/page/register",
+				url:rootPath+"/loan/page/register",
 				data:{phone:$.trim($("#phone").val()),
 					loginPassword:$.md5($.trim($("#loginPassword").val())),
 					messageCode:$.trim($("#messageCode").val())},

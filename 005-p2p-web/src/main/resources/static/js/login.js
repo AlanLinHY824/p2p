@@ -41,15 +41,40 @@ function showSuccess(id) {
 function login() {
 	hideError("phone");
 	hideError("loginPassword");
+	$("#showId").html("");
+	var phone=$("#phone").val();
+	var loginPassword=$("#loginPassword").val();
+	var captcha=$("#captcha").val();
+	if (!/^1[1-9]\d{9}$/.test(phone)){
+		showError("phone","请输入正确格式的手机号！");
+		return;
+	}
+	if (phone==""){
+		showError("phone","手机号不能为空");
+		return;
+	}
+	if (!/^(([a-zA-Z]+[0-9]+)|([0-9]+[a-zA-Z]+))[a-zA-Z0-9]*/.test(loginPassword)){
+		showError("loginPassword","密码必须同时包含数字和英文字母");
+		return;
+	}
+	if (loginPassword==""){
+		showError("loginPassword","密码不能为空");
+		return;
+	}
+	if (captcha==""){
+		$("#showId").html("验证码不能为空");
+		return;
+	}
 	$.ajax({
-		url:"/005-p2p-web/loan/page/login",
+		url:rootPath +"/loan/page/login",
 		data:{phone:$("#phone").val(),
 			loginPassword:$("#loginPassword").val(),
 			captcha:$("#captcha").val()},
 		type:"post",
 		success:function (data) {
 			if (data.code==200){
-				window.location.href="/005-p2p-web/index";
+				// window.location.href="/005-p2p-web/index";
+				window.location.href=$("#redictURL").val();
 			}else if (data.code==1006){
 				showError("phone",data.message);
 			}else if (data.code==1007){
@@ -62,4 +87,5 @@ function login() {
 			showError("phone","服务器繁忙，请稍后再试");
 		}
 	})
+
 }

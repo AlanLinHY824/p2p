@@ -7,7 +7,18 @@ $(function(){
 	},function(){
 	    $(this).children(".menu-drop").stop(false,true).hide();
 	});
+
 });
+</script>
+
+<script type="text/javascript" th:inline="javascript">
+    //站点地址
+    var rootPath=[[${#httpServletRequest.getContextPath()}]];
+    //本次访问地址
+    var redictURL=[[${#httpServletRequest.getRequestURL()}]]+"?"+([[${#httpServletRequest.getQueryString()}]]==null?"":[[${#httpServletRequest.getQueryString()}]]);
+    function toLogin(){
+        window.location.href=rootPath+"/loan/page/login?redictURL="+redictURL;
+    }
 </script>
 <!--页头start-->
 <a id="top"></a>
@@ -44,7 +55,7 @@ $(function(){
         <div class="login-right">
             	<!-- 未登录start -->
             <div th:if="${#session.getAttribute('user')==null}">
-                <div class="no-login"><a th:href="@{/loan/page/register}" class="btn-reg">注册</a><a th:href="@{/loan/page/login}" class="btn-login">登录</a></div>
+                <div class="no-login"><a th:href="@{/loan/page/register}" class="btn-reg">注册</a><a href="#" onclick="toLogin()" class="btn-login">登录</a></div>
             </div>
             	<!-- 未登录end -->
             	
@@ -62,7 +73,7 @@ $(function(){
                                 <li class="icon-invest" style="margin-left:85px;"><a href="loan/loan"><i></i><span>投资</span></a></li>
                             </ul>
                             <div class="enter">进入“<a href="/webPage/account/acc.html?mytime=1501046257129">我的小金库</a>”</div>
-                            <div class="exit"><a th:href="@{/loan/logout}">退出</a></div>
+                            <div class="exit"><a th:href="@{/loan/logout(redictURL=${#httpServletRequest.getRequestURL()}+'?'+(${#httpServletRequest.getQueryString()}==null?'':${#httpServletRequest.getQueryString()}))}">退出</a></div>
                         </div>
                     </div>
                 </div>
