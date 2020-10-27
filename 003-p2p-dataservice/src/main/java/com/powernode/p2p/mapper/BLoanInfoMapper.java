@@ -38,4 +38,9 @@ public interface BLoanInfoMapper {
 
     List<BLoanInfo> queryLoanInfoByPage(Integer ptype, Integer start, Integer pageSize);
 
+    Integer updateLeftMoney(Integer loanId, Double leftProductMoneyNew, Integer version);
+
+    Integer updateLeftMoneyRe(Integer loanId, Double bidMoney, Integer version);
+
+    List<BLoanInfo> selectLoanInfoByStatus(Integer status);
 }

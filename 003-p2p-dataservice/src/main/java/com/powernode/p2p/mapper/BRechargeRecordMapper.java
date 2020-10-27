@@ -3,9 +3,10 @@ package com.powernode.p2p.mapper;
 import com.powernode.p2p.model.BRechargeRecord;
 import com.powernode.p2p.model.BRechargeRecordExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface BRechargeRecordMapper {
     int countByExample(BRechargeRecordExample example);
 
@@ -28,4 +29,8 @@ public interface BRechargeRecordMapper {
     int updateByPrimaryKeySelective(BRechargeRecord record);
 
     int updateByPrimaryKey(BRechargeRecord record);
+
+    List<BRechargeRecord> selectRecentRechargeRecord(Integer id, Integer count);
+
+    int updateStatusByRechargeNo(String rechargeNo, String rechargeStatus);
 }

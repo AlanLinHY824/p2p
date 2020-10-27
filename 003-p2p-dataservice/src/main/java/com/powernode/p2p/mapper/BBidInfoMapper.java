@@ -36,4 +36,6 @@ public interface BBidInfoMapper {
     List<BBidInfoVo> selectBidByLoanId(Integer loanId);
 
     List<BBidInfoVo> selectBidByLoanIdPage(Integer loanId, int start, int pageSize);
+
+    List<BBidInfoVo> selectRecentBidRecord(Integer id, Integer recentBidCount);
 }

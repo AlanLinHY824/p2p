@@ -1,5 +1,6 @@
 package com.powernode.p2p.service;
 
+import com.powernode.p2p.exception.ResultException;
 import com.powernode.p2p.model.UFinanceAccount;
 import com.powernode.p2p.model.UUser;
 
@@ -43,7 +44,7 @@ public interface UserService {
      * @param loginPassword
      * @return
      */
-    UUser login(String phone, String loginPassword);
+    UUser login(String phone, String loginPassword) throws ResultException;
 
     /**
      * 更新用户的身份信息
@@ -51,4 +52,6 @@ public interface UserService {
      * @return
      */
     Integer putIdAndRealName(UUser user);
+
+    void putPhoto(Integer id, String path);
 }

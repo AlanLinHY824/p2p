@@ -141,7 +141,7 @@ $(function() {
 			type:"post",
 			success:function (data) {
 				if (data.code==200){
-					window.location.href="/005-p2p-web/index";
+					window.location.href=redictURL;
 				}else {
 					alert(data.message);
 				}

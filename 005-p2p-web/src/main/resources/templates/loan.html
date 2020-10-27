@@ -49,7 +49,7 @@
 						</div>
 					</div>
 					<div class="pro-btn">
-						<a th:href="@{/loan/loanInfo}" class="btn-1">立即投资</a><!--已满标按钮-->
+						<a th:href="@{'/loan/loanInfo/'+${loanInfo.id}}" class="btn-1">立即投资</a><!--已满标按钮-->
 					</div>
 				</div>
 			</div>
@@ -90,12 +90,8 @@
 	        <!--投资排行榜begin-->
 	        <div class="system-notice" style="margin-top: 0px;">
 	            <div class="system-tit"><h3>投资排行榜</h3></div>
-	            <ul>
-	            	<li><span>1.&nbsp;137******98&nbsp;&nbsp;9000</span></li>
-	            	<li><span>2.&nbsp;139******12&nbsp;&nbsp;8000</span></li>
-	            	<li><span>3.&nbsp;155******45&nbsp;&nbsp;6000</span></li>
-	            	<li><span>4.&nbsp;177******00&nbsp;&nbsp;5500</span></li>
-	            	<li><span>5.&nbsp;138******73&nbsp;&nbsp;1000</span></li>
+	            <ul  th:each="singleInvest_range:${invest_range}">
+	            	<li><span th:text="|${singleInvest_rangeStat.count}. ${singleInvest_range.phone} ${singleInvest_range.invest}元|"></span></li>
 	            </ul>
 	        </div>
 	        <!--投资排行榜end-->

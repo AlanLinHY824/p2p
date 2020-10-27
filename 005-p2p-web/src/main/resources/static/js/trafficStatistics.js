@@ -86,6 +86,17 @@ $(function(){
 	});
 	//个人信息下拉
 	$(".logged").hover(function(){
+		//ajax请求异步获取账户信息
+		$.ajax({
+			type:"get",
+			url:rootPath +"/loan/page/getAccount",
+			success:function (data) {
+				if (data.message=200){
+					$("#frame_top").text(data.result.availableMoney)
+				}
+			}
+		});
+
 		$(this).addClass("logged-hover");
 		$(".userinfo-drop-down",this).stop().animate({ height: '205px'},300);
 	},function(){

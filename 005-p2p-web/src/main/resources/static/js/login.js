@@ -75,10 +75,8 @@ function login() {
 			if (data.code==200){
 				// window.location.href="/005-p2p-web/index";
 				window.location.href=$("#redictURL").val();
-			}else if (data.code==1006){
-				showError("phone",data.message);
-			}else if (data.code==1007){
-				showError("loginPassword",data.message);
+			}else if (data.code==1004||data.code==1008||data.code==1009||data.code==1003){
+				$("#showId").html(data.message)
 			} else {
 				alert("服务器繁忙，请稍后再试")
 			}

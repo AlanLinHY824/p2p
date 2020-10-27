@@ -34,7 +34,7 @@ public interface LoanService {
 
     List<BBidInfoVo> queryBidByLoanId(Integer loanId);
 
-    Integer queryBidCountByLoanId(Integer loanId);
 
-    List<BBidInfoVo> queryBidByLoanId(Integer loanId, PageModel pageModel);
+
+
 }

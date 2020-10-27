@@ -22,10 +22,12 @@
             $('#alipay').click(function () {
                 $(this).addClass('img_on').append("<i></i>");
                 $(this).parent().siblings().children().removeClass('img_on');
+                $("#payway").val("aliPay");
             });
             $('#weixinpay').click(function () {
                 $(this).addClass('img_on').append("<i></i>");
                 $(this).parent().siblings().children().removeClass('img_on');
+                $("#payway").val("weixinPay");
             });
         });
 
@@ -59,11 +61,18 @@
 
         //提交表单前验证表单数据
         function submitForm() {
+            var payway=$("#payway").val();
             if (checkData()) {
                 $(".input_text").removeClass("input-red");
                 $("#div1_1").hide();
                 $("#dialog-overlay").show();
                 $("#failurePayment").show();
+                if (payway=="aliPay"){
+                    document.getElementById("rechargeForm").action=rootPath+"/pay/aliPay"
+                }
+                if (payway=="weixinPay"){
+                    document.getElementById("rechargeForm").action=rootPath+"/pay/WXPayMakeOrder";
+                }
                 $("#rechargeForm").submit();
             }
         }
@@ -80,7 +89,7 @@
 <!-- 二级导航栏start -->
 <div th:include="commons/subNav :: html"></div>
 <!-- 二级导航栏end -->
-
+<input type="hidden" id="payway" />
 <!--页中start-->
 <div class="mainBox">
     <div class="homeWap">

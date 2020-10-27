@@ -77,6 +77,33 @@
             <artifactId>004-p2p-common</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <!--alipay依赖-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.10.0.ALL</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- google生成二维码依赖 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+<!--        &lt;!&ndash;日志&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>commons-logging</groupId>-->
+<!--            <artifactId>commons-logging</artifactId>-->
+<!--            <version>1.1.1</version>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>

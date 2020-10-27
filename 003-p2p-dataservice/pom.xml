@@ -46,6 +46,11 @@
             <groupId>com.alibaba.spring.boot</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!--ZooKeeper注册中心依赖-->
         <dependency>
             <groupId>com.101tec</groupId>
@@ -79,6 +84,11 @@
             <groupId>com.powernode.p2p</groupId>
             <artifactId>004-p2p-common</artifactId>
             <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.2</version>
         </dependency>
     </dependencies>
 

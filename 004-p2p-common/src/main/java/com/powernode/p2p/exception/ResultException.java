@@ -19,6 +19,9 @@ public class ResultException extends RuntimeException{
         this.code=resultEnum.getCode();
     }
 
+    public ResultException() {
+    }
+
     @Override
     public String getMessage() {
         return message;

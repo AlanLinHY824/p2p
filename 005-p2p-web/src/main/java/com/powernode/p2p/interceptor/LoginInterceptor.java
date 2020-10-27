@@ -1,7 +1,7 @@
 package com.powernode.p2p.interceptor;
 
 import com.powernode.p2p.constants.MyConstants;
-import com.powernode.p2p.vo.UUserVo;
+import com.powernode.p2p.model.UUser;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,9 +17,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        UUserVo userVo = (UUserVo)request.getSession().getAttribute(MyConstants.USER_SESSION);
+        UUser userVo = (UUser)request.getSession().getAttribute(MyConstants.USER_SESSION);
+        String redictURL = request.getRequestURL().toString()+(request.getQueryString()==null?"":"?"+request.getQueryString());
+        System.out.println("拦截器");
         if (userVo==null){
-            request.getRequestDispatcher("/loan/page/login").forward(request, response);
+            request.getRequestDispatcher("/loan/page/login?redictURL="+redictURL).forward(request, response);
+//            response.sendRedirect(request.getContextPath()+"/loan/page/login");
             return false;
         }
         return true;

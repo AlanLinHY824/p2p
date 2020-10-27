@@ -17,7 +17,19 @@ public enum ResultEnum {
     ID_INCONSISTENT("身份验证未通过，若确认信息填写无误，请咨询公安户籍部门，谢谢！",1007),
     USER_NOT_FOUND("用户不存在",1008),
     PASSWORD_ERRO("登录密码错误",1009),
-    INTERNAL_ERRO("服务器繁忙，请稍后再试",500);
+    NOR_LOGGED("对不起，请登录后再试",1010),
+    LEFTPRODUCTMONEY_NOT_ENOUGH("对不起，已售罄，请挑选其他商品产品",1011),
+    LOAN_NOT_FOUND("对不起，未找到该产品",1012),
+    AVAILABLEMONEY_NOT_ENOUGH("对不起，您的余额不足",1013),
+    ACCOUNT_ERROR("账户更新异常，投资失败，请稍后再试",1014),
+    BID_ERROR("交易信息建立失败，请稍后再试！",1015),
+    LOAN_STATUS_ERROR("产品状态修改失败，请稍后再试！",1016),
+    ORDER_ADD_ERROR("订单创建失败，请稍后再试！",1017),
+    PAY_STATUS_QUERY_FAIL("支付状态查询失败",1018),
+    RECHARGE_FAIL("尝试充值失败，等待定时器重试",1019),
+    RECHARGE_UPDATE_ACCOUNT_FAIL("充值时账户余额修改失败，等待定时器重试",1020),
+    CONNECT_FAIL("通信失败",1021),
+    INTERNAL_ERRO("服务器挤爆啦，请稍后再试！",500);
 
     /**
      * 结果信息
@@ -36,6 +48,9 @@ public enum ResultEnum {
     ResultEnum(String message, Integer code) {
         this.message = message;
         this.code = code;
+    }
+
+    ResultEnum() {
     }
 
     public String getMessage() {

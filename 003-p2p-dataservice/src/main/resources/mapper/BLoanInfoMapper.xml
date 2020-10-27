@@ -241,6 +241,9 @@
     </where>
     limit #{start},#{pageSize};
   </select>
+    <select id="selectLoanInfoByStatus" resultMap="BaseResultMap">
+      select * from b_loan_info where product_status=#{status}
+    </select>
     <update id="updateByExampleSelective" parameterType="map" >
     update b_loan_info
     <set >
@@ -381,4 +384,11 @@
       version = #{version,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+    <update id="updateLeftMoney">
+      update b_loan_info set left_product_money=#{leftProductMoneyNew},version=#{version}+1 where id=#{loanId} and version=#{version}
+    </update>
+<!--  这种情况下并不需要版本号-->
+  <update id="updateLeftMoneyRe">
+      update b_loan_info set left_product_money=left_product_money-#{bidMoney} where id=#{loanId} and left_product_money-#{bidMoney}>0
+    </update>
 </mapper>

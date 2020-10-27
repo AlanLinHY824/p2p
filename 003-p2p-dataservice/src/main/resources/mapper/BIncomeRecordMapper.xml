@@ -11,6 +11,35 @@
     <result column="income_money" property="incomeMoney" jdbcType="DOUBLE" />
     <result column="income_status" property="incomeStatus" jdbcType="INTEGER" />
   </resultMap>
+
+  <resultMap id="BaseResultMap2" type="com.powernode.p2p.vo.BIncomeRecordVo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="loan_id" property="loanId" jdbcType="INTEGER" />
+    <result column="bid_id" property="bidId" jdbcType="INTEGER" />
+    <result column="bid_money" property="bidMoney" jdbcType="DOUBLE" />
+    <result column="income_date" property="incomeDate" jdbcType="DATE" />
+    <result column="income_money" property="incomeMoney" jdbcType="DOUBLE" />
+    <result column="income_status" property="incomeStatus" jdbcType="INTEGER" />
+    <association property="loanInfo" javaType="com.powernode.p2p.model.BLoanInfo">
+      <id column="loan_id" property="id" jdbcType="INTEGER" />
+      <result column="product_name" property="productName" jdbcType="VARCHAR" />
+      <result column="rate" property="rate" jdbcType="DOUBLE" />
+      <result column="cycle" property="cycle" jdbcType="INTEGER" />
+      <result column="release_time" property="releaseTime" jdbcType="DATE" />
+      <result column="product_type" property="productType" jdbcType="INTEGER" />
+      <result column="product_no" property="productNo" jdbcType="VARCHAR" />
+      <result column="product_money" property="productMoney" jdbcType="DOUBLE" />
+      <result column="left_product_money" property="leftProductMoney" jdbcType="DOUBLE" />
+      <result column="bid_min_limit" property="bidMinLimit" jdbcType="DOUBLE" />
+      <result column="bid_max_limit" property="bidMaxLimit" jdbcType="DOUBLE" />
+      <result column="product_status" property="productStatus" jdbcType="INTEGER" />
+      <result column="product_full_time" property="productFullTime" jdbcType="TIMESTAMP" />
+      <result column="product_desc" property="productDesc" jdbcType="VARCHAR" />
+      <result column="version" property="version" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -171,7 +200,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map" >
+    <select id="selectRecentIncomeRecord" resultMap="BaseResultMap2">
+      select * from b_income_record bi,b_loan_info bl where bi.uid=#{id} and bi.loan_id=bl.id order by income_date limit 0,#{count}
+    </select>
+    <select id="selectIncomeByDateAndStatus" resultMap="BaseResultMap">
+      select * from b_income_record where income_date &lt; #{date,jdbcType=DATE} and income_status=#{status}
+    </select>
+    <update id="updateByExampleSelective" parameterType="map" >
     update b_income_record
     <set >
       <if test="record.id != null" >

@@ -42,6 +42,7 @@ public class CaptchaController {
         Random random = new Random();
         //生成6位随机验证码
         String captcha = this.getRandomCode(6);
+//        String captcha = "I1l0O";
         try {
             //创建字节数组输出流
             ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
@@ -86,13 +87,13 @@ public class CaptchaController {
      * @return
      */
     private String getRandomCode(int count) {
-        String[] array = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9"};
+        String[] array = {"A","B","C","D","E","F","G","H","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9"};
 
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < count; i++) {
             //生成一个下标0-61之间一个整数
-            int index = (int) Math.round(Math.random() * 61);
+            int index = (int) Math.round(Math.random() * 59);
             //从array数组中获取该下标字符放到result中
             result.append(array[index]);
         }

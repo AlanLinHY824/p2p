@@ -164,7 +164,10 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map" >
+    <select id="selectRecentRechargeRecord" resultMap="BaseResultMap">
+      select * from b_recharge_record where uid=#{id} order by recharge_time limit 0,#{count}
+    </select>
+    <update id="updateByExampleSelective" parameterType="map" >
     update b_recharge_record
     <set >
       <if test="record.id != null" >
@@ -240,4 +243,7 @@
       recharge_desc = #{rechargeDesc,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+    <update id="updateStatusByRechargeNo">
+      update b_recharge_record set recharge_status=#{rechargeStatus} where recharge_no=#{rechargeNo} and recharge_status=0
+    </update>
 </mapper>

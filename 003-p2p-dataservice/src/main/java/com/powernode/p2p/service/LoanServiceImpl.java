@@ -3,7 +3,7 @@ package com.powernode.p2p.service;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.powernode.p2p.mapper.BBidInfoMapper;
 import com.powernode.p2p.mapper.BLoanInfoMapper;
-import com.powernode.p2p.model.BBidInfoExample;
+import com.powernode.p2p.mapper.UFinanceAccountMapper;
 import com.powernode.p2p.model.BLoanInfo;
 import com.powernode.p2p.model.BLoanInfoExample;
 import com.powernode.p2p.myutils.PageModel;
@@ -29,6 +29,9 @@ public class LoanServiceImpl implements LoanService{
 
     @Autowired
     BBidInfoMapper bidInfoMapper;
+
+    @Autowired
+    UFinanceAccountMapper financeAccountMapper;
 
     @Override
     public Double queryHisAvgRate() {
@@ -68,19 +71,5 @@ public class LoanServiceImpl implements LoanService{
         return bBidInfos;
     }
 
-    @Override
-    public List<BBidInfoVo> queryBidByLoanId(Integer loanId, PageModel pageModel) {
-        int currentPage=pageModel.getCurrentPage();
-        int pageSize = pageModel.getPageSize();
-        int start=pageSize*(currentPage-1);
-        return bidInfoMapper.selectBidByLoanIdPage(loanId,start,pageSize);
-    }
 
-    @Override
-    public Integer queryBidCountByLoanId(Integer loanId) {
-        BBidInfoExample bBidInfoExample = new BBidInfoExample();
-        BBidInfoExample.Criteria criteria = bBidInfoExample.createCriteria();
-        criteria.andLoanIdEqualTo(loanId);
-        return bidInfoMapper.countByExample(bBidInfoExample);
-    }
 }

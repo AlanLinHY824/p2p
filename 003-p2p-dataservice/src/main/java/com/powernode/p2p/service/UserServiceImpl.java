@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UFinanceAccount queryAccount(Integer id) {
+    public UFinanceAccount queryAccount(Integer id) throws ResultException{
         UFinanceAccountExample uFinanceAccountExample = new UFinanceAccountExample();
         UFinanceAccountExample.Criteria criteria = uFinanceAccountExample.createCriteria();
         criteria.andUidEqualTo(id);
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UUser login(String phone, String loginPassword) {
+    public UUser login(String phone, String loginPassword)throws ResultException {
         UUserExample uUserExample = new UUserExample();
         UUserExample.Criteria criteria = uUserExample.createCriteria();
         criteria.andPhoneEqualTo(phone);
@@ -112,5 +112,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public Integer putIdAndRealName(UUser user) {
         return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public void putPhoto(Integer id, String path) {
+        UUser user = new UUser();
+        user.setId(id);
+        user.setHeaderImage(path);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }

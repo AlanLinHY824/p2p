@@ -27,6 +27,23 @@
       <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
       <result column="header_image" property="headerImage" jdbcType="VARCHAR" />
     </association>
+    <association property="loanInfo" javaType="com.powernode.p2p.model.BLoanInfo">
+      <id column="loan_id" property="id" jdbcType="INTEGER" />
+      <result column="product_name" property="productName" jdbcType="VARCHAR" />
+      <result column="rate" property="rate" jdbcType="DOUBLE" />
+      <result column="cycle" property="cycle" jdbcType="INTEGER" />
+      <result column="release_time" property="releaseTime" jdbcType="DATE" />
+      <result column="product_type" property="productType" jdbcType="INTEGER" />
+      <result column="product_no" property="productNo" jdbcType="VARCHAR" />
+      <result column="product_money" property="productMoney" jdbcType="DOUBLE" />
+      <result column="left_product_money" property="leftProductMoney" jdbcType="DOUBLE" />
+      <result column="bid_min_limit" property="bidMinLimit" jdbcType="DOUBLE" />
+      <result column="bid_max_limit" property="bidMaxLimit" jdbcType="DOUBLE" />
+      <result column="product_status" property="productStatus" jdbcType="INTEGER" />
+      <result column="product_full_time" property="productFullTime" jdbcType="TIMESTAMP" />
+      <result column="product_desc" property="productDesc" jdbcType="VARCHAR" />
+      <result column="version" property="version" jdbcType="INTEGER" />
+    </association>
   </resultMap>
 
   <sql id="Example_Where_Clause" >
@@ -186,7 +203,10 @@
   <select id="selectBidByLoanIdPage" resultMap="BaseResultMap2">
     select * from b_bid_info b,u_user u where b.loan_id=#{loanId} and b.uid=u.id limit #{start},#{pageSize}
   </select>
-  <update id="updateByExampleSelective" parameterType="map" >
+    <select id="selectRecentBidRecord" resultMap="BaseResultMap2">
+      select * from b_bid_info bb,b_loan_info bl where uid=#{id} and bb.loan_id=bl.id order by bid_time limit 0,#{recentBidCount}
+    </select>
+    <update id="updateByExampleSelective" parameterType="map" >
     update b_bid_info
     <set >
       <if test="record.id != null" >

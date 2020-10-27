@@ -29,4 +29,9 @@ public interface UFinanceAccountMapper {
     int updateByPrimaryKeySelective(UFinanceAccount record);
 
     int updateByPrimaryKey(UFinanceAccount record);
+
+    int updateAccount(Double bidMoney,Integer uid);
+
+    int updateMoneyByUid(Integer uid, double money);
+
 }
