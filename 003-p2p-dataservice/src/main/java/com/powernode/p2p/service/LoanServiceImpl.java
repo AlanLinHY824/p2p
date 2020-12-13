@@ -20,9 +20,10 @@ import java.util.Map;
  * @Description
  * @Date 2020/10/12
  */
-@Service(interfaceClass = LoanService.class,timeout = 20000,version = "1.0.0")
+@Service(interfaceClass = LoanService.class,timeout = 20000,version = "1.0.0",retries = 5,weight = 5)
 @Component
-public class LoanServiceImpl implements LoanService{
+public class
+LoanServiceImpl implements LoanService{
 
     @Autowired
     BLoanInfoMapper loanInfoMapper;
@@ -35,6 +36,7 @@ public class LoanServiceImpl implements LoanService{
 
     @Override
     public Double queryHisAvgRate() {
+        System.out.println("服务20881");
         Double hisAvgRate=loanInfoMapper.selectHisAvgRate();
         DecimalFormat df1 = new DecimalFormat("0.00");
         return Double.valueOf( df1.format(hisAvgRate));
@@ -42,18 +44,20 @@ public class LoanServiceImpl implements LoanService{
 
     @Override
     public List<BLoanInfo> queryLoanInfoByTypeAndNum(Map condtion) {
-
+        System.out.println("服务20881");
         return loanInfoMapper.queryLoanInfoByTypeAndNum(condtion);
     }
 
     @Override
     public List<BLoanInfo> queryLoanInfoByType(Integer ptype, PageModel pageModel) {
+        System.out.println("服务20881");
         loanInfoMapper.queryLoanInfoByPage(ptype,pageModel.getCurrentPage()*pageModel.getPageSize()+1,pageModel.getPageSize());
         return  loanInfoMapper.queryLoanInfoByPage(ptype,(pageModel.getCurrentPage()-1)*pageModel.getPageSize(),pageModel.getPageSize());
     }
 
     @Override
     public Integer queryLoanCountByType(Integer ptype) {
+        System.out.println("服务20881");
         BLoanInfoExample bLoanInfoExample = new BLoanInfoExample();
         BLoanInfoExample.Criteria criteria = bLoanInfoExample.createCriteria();
         criteria.andProductTypeEqualTo(ptype);
@@ -62,11 +66,13 @@ public class LoanServiceImpl implements LoanService{
 
     @Override
     public BLoanInfo queryLoanInfoById(Integer loanId) {
+        System.out.println("服务20881");
         return loanInfoMapper.selectByPrimaryKey(loanId);
     }
 
     @Override
     public List<BBidInfoVo> queryBidByLoanId(Integer loanId) {
+        System.out.println("服务20881");
         List<BBidInfoVo> bBidInfos=bidInfoMapper.selectBidByLoanId(loanId);
         return bBidInfos;
     }

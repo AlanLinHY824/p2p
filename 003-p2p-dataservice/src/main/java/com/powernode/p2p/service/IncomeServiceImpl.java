@@ -25,7 +25,7 @@ import java.util.List;
  * @Description
  * @Date 2020/10/21
  */
-@Service(interfaceClass = IncomeService.class,timeout = 20000,version = "1.0.0")
+@Service(interfaceClass = IncomeService.class,timeout = 20000,version = "1.0.0",retries = 5,weight = 5)
 @Component
 @Slf4j
 public class IncomeServiceImpl implements IncomeService {

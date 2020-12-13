@@ -28,13 +28,13 @@ import java.util.List;
 @Controller
 public class LoanController {
 
-    @Reference(interfaceClass = LoanService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = LoanService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private LoanService loanService;
 
-    @Reference(interfaceClass = UserService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = UserService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private UserService userService;
 
-    @Reference(interfaceClass = RedisService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = RedisService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private RedisService redisService;
 
     @RequestMapping("/loan/loan")
@@ -45,7 +45,6 @@ public class LoanController {
         PageModel pageModel=(PageModel)session.getAttribute(MyConstants.PAGEMODEL);
         if(pageModel==null){
             pageModel=new PageModel();
-            session.setAttribute(MyConstants.PAGEMODEL,pageModel);
         }
         pageModel.setCurrentPage(currentPage);
         //查询总记录数
@@ -59,6 +58,7 @@ public class LoanController {
             model.addAttribute(MyConstants.LOANINFOSBYTYPEANDPAGE,loanInfos);
         }
         model.addAttribute(MyConstants.INVEST_RANGE, redisService.get(MyConstants.INVEST_RANGE, MyConstants.INVEST_RANGE_COUNT));
+        session.setAttribute(MyConstants.PAGEMODEL,pageModel);
         return "loan";
     }
 

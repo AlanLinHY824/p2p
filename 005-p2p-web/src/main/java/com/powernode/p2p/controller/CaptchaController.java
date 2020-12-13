@@ -28,7 +28,7 @@ public class CaptchaController {
      */
     public static final int HEIGHT = 50;
 
-    @Reference(interfaceClass = RedisService.class,version = "1.0.0",timeout = 20000,check = false)
+    @Reference(interfaceClass = RedisService.class,version = "1.0.0",timeout = 20000,check = false,cluster = "failover",loadbalance = "random")
     RedisService redisService;
 
     /**

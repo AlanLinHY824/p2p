@@ -51,7 +51,7 @@
             <div class="credenBasic">
                 <div class="credenName">
                     <div class="head">
-                        <span><img id="user_photo" th:src="@{${session.user.headerImage}}" width="90"/></span>
+                        <span><img id="user_photo" th:src="${session.user.headerImage}" width="90"/></span>
                         <form>
                             <span class="btn-upload" style="margin-top: 10px;">
                                 <input type="file" name="file" id="photo" title="请选择图片" />

@@ -3,26 +3,25 @@ package com.powernode.p2p.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.powernode.p2p.constants.MyConstants;
 import com.powernode.p2p.exception.ResultException;
+import com.powernode.p2p.model.BRechargeRecord;
 import com.powernode.p2p.model.UFinanceAccount;
 import com.powernode.p2p.model.UUser;
-import com.powernode.p2p.myutils.MD5Util;
-import com.powernode.p2p.myutils.Result;
-import com.powernode.p2p.myutils.ResultEnum;
-import com.powernode.p2p.myutils.UserUtils;
+import com.powernode.p2p.myutils.*;
 import com.powernode.p2p.service.*;
+import com.powernode.p2p.vo.BBidInfoVo;
+import com.powernode.p2p.vo.BIncomeRecordVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,15 +33,15 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class UserController {
 
-    @Reference(interfaceClass = UserService.class,timeout = 20000,check = false,version = "1.0.0")
+    @Reference(interfaceClass = UserService.class,timeout = 20000,check = false,version = "1.0.0",cluster = "failover",loadbalance = "random")
     UserService userService;
-    @Reference(interfaceClass = RedisService.class,version = "1.0.0",timeout = 20000,check = false)
+    @Reference(interfaceClass = RedisService.class,version = "1.0.0",timeout = 20000,check = false,cluster = "failover",loadbalance = "random")
     RedisService redisService;
-    @Reference(interfaceClass = BidService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = BidService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private BidService bidService;
-    @Reference(interfaceClass = IncomeService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = IncomeService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private IncomeService incomeService;
-    @Reference(interfaceClass = RechargeService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = RechargeService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private RechargeService rechargeService;
 
 
@@ -63,6 +62,18 @@ public class UserController {
         return Result.SUCCESS();
     }
 
+    //检查原密码
+    @RequestMapping("/loan/page/checkPassword")
+    @ResponseBody
+    public Result checkPassword(@RequestParam(value = "loginPassword",required = true) String loginPassword,
+                                HttpSession session){
+        UUser user = (UUser)session.getAttribute(MyConstants.USER_SESSION);
+        if (!user.getLoginPassword().equals(loginPassword)){
+            return Result.FAIL(new ResultException(ResultEnum.OLD_PASSWORD_ERRO));
+        }
+        return Result.SUCCESS();
+    }
+
     //获取手机验证码
     @RequestMapping("/loan/page/messageCode")
     @ResponseBody
@@ -70,7 +81,7 @@ public class UserController {
         String scode = UserUtils.messageCode(phone);
         log.info("手机号"+phone+"获取验证码:"+scode);
         redisService.set(phone, scode, 10,TimeUnit.MINUTES);
-        return Result.SUCCESS();
+        return Result.SUCCESS(scode);
     }
 
     //用户注册
@@ -93,6 +104,58 @@ public class UserController {
         session.setAttribute(MyConstants.USER_SESSION, user);
         return Result.SUCCESS();
     }
+
+    //修改密码
+    @PostMapping("/loan/page/updatePassword")
+    @ResponseBody
+    public Result updatePassword(@RequestParam(value = "phone",required = false) String phone,
+                           @RequestParam(value = "loginPassword",required = true) String loginPassword,
+                           @RequestParam(value = "messageCode",required = false) String messageCode,
+                           @RequestParam(value = "newLoginPassword",required = true) String newLoginPassword,
+                           HttpSession session){
+        if (!phone.equals("")){
+            //校验手机验证码
+            String messageCode_redis=redisService.get(phone);
+            if (messageCode_redis==null){
+                return Result.FAIL(new ResultException(ResultEnum.MESSAGECODE_EXPIRE));
+            }
+            if (!messageCode_redis.equals(messageCode)){
+                return Result.FAIL(new ResultException(ResultEnum.MESSAGECODE_ERROR));
+            }
+        }
+        UUser user = (UUser)session.getAttribute(MyConstants.USER_SESSION);
+        if (!ObjectUtils.allNotNull(user)){
+            return Result.FAIL(new ResultException(ResultEnum.NOR_LOGGED));
+        }
+        if (user.getLoginPassword().equals(newLoginPassword)){
+            return Result.FAIL(new ResultException(ResultEnum.NEW_PASSWORD_ERRO));
+        }
+        //验证码校验成功，调用修改密码的服务接口
+        try {
+            Integer count = userService.updatePassword(user.getId(), newLoginPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (e instanceof ResultException){
+                return Result.FAIL((ResultException)e);
+            }
+            return Result.FAIL(new ResultException(ResultEnum.INTERNAL_ERRO));
+        }
+        user.setLoginPassword(newLoginPassword);
+        session.setAttribute(MyConstants.USER_SESSION, user);
+        return Result.SUCCESS();
+    }
+
+    @GetMapping("/loan/page/toUpdatePassword")
+    public String toUpdatePassword(HttpSession session,Model model){
+        UUser user = (UUser)session.getAttribute(MyConstants.USER_SESSION);
+        if (!ObjectUtils.allNotNull(user)){
+            throw new ResultException(ResultEnum.NOR_LOGGED);
+        }
+        model.addAttribute("phone", user.getPhone());
+        return "updatePassword";
+    }
+
+
 
     //跳转至登录页面
     @GetMapping("/loan/page/login")
@@ -174,25 +237,26 @@ public class UserController {
             user.setName(realName);
             user.setIdCard(idCard);
         }
+        session.setAttribute(MyConstants.USER_SESSION, user);
         return Result.SUCCESS();
     }
 
     //跳转至个人中心
     @RequestMapping("/loan/myCenter")
     public String myCenter(HttpSession session,Model model){
-//        UUser user = (UUser)session.getAttribute(MyConstants.USER_SESSION);
-//        if (!ObjectUtils.allNotNull(user)){
-//            return "login";
-//        }
-//        UFinanceAccount uFinanceAccount = userService.queryAccount(user.getId());
-//        model.addAttribute(MyConstants.USER_ACCOUNT, uFinanceAccount);
-//        //获取最近投资5条记录
-//        List<BBidInfoVo> bBidInfos = bidService.queryRecentBidRecord(user.getId());
-//        model.addAttribute(MyConstants.BBIDINFOS, bBidInfos);
-//        List<BIncomeRecordVo> bIncomeRecords = incomeService.queryRecentIncomeRecord(user.getId());
-//        model.addAttribute(MyConstants.BINCOMERECORDS, bIncomeRecords);
-//        List<BRechargeRecord> rechargeRecords = rechargeService.queryRecentRechargeRecord(user.getId());
-//        model.addAttribute(MyConstants.RECHARGERECORDS, rechargeRecords);
+        UUser user = (UUser)session.getAttribute(MyConstants.USER_SESSION);
+        if (!ObjectUtils.allNotNull(user)){
+            return "login";
+        }
+        UFinanceAccount uFinanceAccount = userService.queryAccount(user.getId());
+        model.addAttribute(MyConstants.USER_ACCOUNT, uFinanceAccount);
+        //获取最近投资5条记录
+        List<BBidInfoVo> bBidInfos = bidService.queryRecentBidRecord(user.getId());
+        model.addAttribute(MyConstants.BBIDINFOS, bBidInfos);
+        List<BIncomeRecordVo> bIncomeRecords = incomeService.queryRecentIncomeRecord(user.getId());
+        model.addAttribute(MyConstants.BINCOMERECORDS, bIncomeRecords);
+        List<BRechargeRecord> rechargeRecords = rechargeService.queryRecentRechargeRecord(user.getId());
+        model.addAttribute(MyConstants.RECHARGERECORDS, rechargeRecords);
         return "myCenter";
     }
 
@@ -200,29 +264,48 @@ public class UserController {
     @PutMapping("/myCenter/photo")
     @ResponseBody
     public Result myInvest(@RequestParam("photo") MultipartFile photo, HttpSession session, Model model){
+        String originalFilename1 = photo.getOriginalFilename();
+        int index = originalFilename1.lastIndexOf(".");
+        String substring = originalFilename1.substring(index + 1 );
+        FastDFSClient fastDFSClient =null;
+        String url =null;
+        try {
+            fastDFSClient = new FastDFSClient("fastdfs.conf");
+            url = fastDFSClient.uploadFile(photo.getBytes(), substring);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResultException(ResultEnum.INTERNAL_ERRO);
+        }
+        System.out.println(url);
         UUser user = (UUser)session.getAttribute(MyConstants.USER_SESSION);
         if (!ObjectUtils.allNotNull(user)){
             throw new ResultException(ResultEnum.NOR_LOGGED);
         }
-        String originalFilename = photo.getOriginalFilename();
-        //项目访问路径,最终存储到数据库
-        String contextDir = generateDir(originalFilename.substring(originalFilename.lastIndexOf(".")+1), "/image/");
-        //本地存储路径，使用\作为路径分隔符，防止在Linux系统下不识别
-        String fileDir = generateDir(originalFilename.substring(originalFilename.lastIndexOf(".")+1), "\\image\\");
-        try {
-            String path = ResourceUtils.getURL("classpath:").getPath()+fileDir;
-//            String contextPath = session.getServletContext().getRealPath("/image");
-//            File file = new File(contextPath, "resources/static/image/");
-            File file = new File(path,originalFilename);
-            if (!file.exists()){
-                file.mkdirs();
-            }
-            photo.transferTo(file.getAbsoluteFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        userService.putPhoto(user.getId(),contextDir+originalFilename);
-        user.setHeaderImage(contextDir+originalFilename);
+//        String originalFilename = photo.getOriginalFilename();
+//        //项目访问路径,最终存储到数据库
+//        String contextDir = generateDir(originalFilename.substring(originalFilename.lastIndexOf(".")+1), "/image/");
+//        //本地存储路径，使用\作为路径分隔符，防止在Linux系统下不识别
+//        String fileDir = generateDir(originalFilename.substring(originalFilename.lastIndexOf(".")+1), "\\image\\");
+//        try {
+//            String path = ResourceUtils.getURL("classpath:").getPath()+fileDir;
+////            System.out.println(path);
+////            ApplicationHome h = new ApplicationHome(getClass());
+////            String path = h.getSource().getAbsolutePath()+"/BOOT-INF/classes/"+fileDir;
+////            System.out.println(path);
+////            String contextPath = session.getServletContext().getRealPath("/image");
+////            File file = new File(contextPath, "resources/static/image/");
+//            File file = new File(path);
+//            if (!file.exists()){
+//                file.mkdirs();
+//            }
+//            File file1 = new File(path,originalFilename);
+//            photo.transferTo(file1.getAbsoluteFile());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        userService.putPhoto(user.getId(),"http://192.168.172.35/"+url);
+        user.setHeaderImage("http://192.168.172.35/"+url);
+        session.setAttribute(MyConstants.USER_SESSION, user);
         return Result.SUCCESS();
     }
 

@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @Description
  * @Date 2020/10/16
  */
-@Service(interfaceClass = RedisService.class,version = "1.0.0",timeout = 20000)
+@Service(interfaceClass = RedisService.class,version = "1.0.0",timeout = 20000,retries = 5,weight = 5)
 @Component
 public class RedisServiceImpl implements RedisService {
 

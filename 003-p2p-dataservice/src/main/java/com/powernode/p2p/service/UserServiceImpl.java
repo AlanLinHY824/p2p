@@ -26,7 +26,7 @@ import java.util.concurrent.Executor;
  * @Description
  * @Date 2020/10/12
  */
-@Service(interfaceClass = UserService.class,timeout = 20000,version = "1.0.0")
+@Service(interfaceClass = UserService.class,timeout = 20000,version = "1.0.0",retries = 5,weight = 5)
 @Component
 public class UserServiceImpl implements UserService{
 
@@ -120,5 +120,22 @@ public class UserServiceImpl implements UserService{
         user.setId(id);
         user.setHeaderImage(path);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public Integer updatePassword(Integer id, String newLoginPassword) {
+        UUser user = new UUser();
+        user.setId(id);
+        user.setLoginPassword(newLoginPassword);
+        int count = 0;
+        try {
+            count = userMapper.updateByPrimaryKeySelective(user);
+        } catch (Exception e) {
+            throw new ResultException(ResultEnum.PASSWORD_UPDATE_FAIL);
+        }
+        if (count==0){
+            throw new ResultException(ResultEnum.PASSWORD_UPDATE_FAIL);
+        }
+        return count;
     }
 }

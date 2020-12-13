@@ -46,10 +46,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RechargeController {
 
-    @Reference(interfaceClass = RechargeService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = RechargeService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private RechargeService rechargeService;
 
-    @Reference(interfaceClass = RedisService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = RedisService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private RedisService redisService;
 
     @RequestMapping("/loan/page/toRecharge")
@@ -64,6 +64,7 @@ public class RechargeController {
     @RequestMapping("/pay/aliPay")
     public String aliPay(@RequestParam("rechargeMoney") Double rechargeMoney , HttpServletResponse httpResponse,
                          HttpServletRequest request, Model model) {
+        System.out.println("这是005的session:"+request.getSession().getId());
         UUser user = (UUser)request.getSession().getAttribute(MyConstants.USER_SESSION);
         if (!ObjectUtils.allNotNull(user)){
             return "login";
@@ -208,7 +209,7 @@ public class RechargeController {
         parasMap.put("total_fee", bRechargeRecord.getRechargeMoney());
         String result =null;
         try {
-            result = HttpClientUtils.doPost("http://localhost:8092/007-p2p-pay/payByWXPay", parasMap);
+            result = HttpClientUtils.doPost("http://10.10.10.18:8092/007-p2p-pay/payByWXPay", parasMap);
         } catch (Exception e) {
             log.error("订单号"+out_trade_no+"与pay工程通讯失败");
             throw e;

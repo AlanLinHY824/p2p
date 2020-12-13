@@ -54,4 +54,6 @@ public interface UserService {
     Integer putIdAndRealName(UUser user);
 
     void putPhoto(Integer id, String path);
+
+    Integer updatePassword(Integer id, String newLoginPassword);
 }

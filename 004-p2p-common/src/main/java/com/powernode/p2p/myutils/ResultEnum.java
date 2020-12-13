@@ -29,6 +29,9 @@ public enum ResultEnum {
     RECHARGE_FAIL("尝试充值失败，等待定时器重试",1019),
     RECHARGE_UPDATE_ACCOUNT_FAIL("充值时账户余额修改失败，等待定时器重试",1020),
     CONNECT_FAIL("通信失败",1021),
+    PASSWORD_UPDATE_FAIL("密码修改失败请稍后再试",1022),
+    NEW_PASSWORD_ERRO("新密码不能和原密码相同",1023),
+    OLD_PASSWORD_ERRO("原密码错误",1024),
     INTERNAL_ERRO("服务器挤爆啦，请稍后再试！",500);
 
     /**

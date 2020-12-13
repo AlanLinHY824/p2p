@@ -96,8 +96,9 @@ public class ScheduleTask {
         log.info("支付宝订单查询结束");
     }
 
-    @Scheduled(cron = "0 0/10 * ? * *")
+//    @Scheduled(cron = "0 0/10 * ? * *")
 //    @Scheduled(cron = "0/10 * * ? * *")
+    @Scheduled(cron = "0 15 4 ? * *")
     public void checkWXOrder(){
         log.info("微信订单查询开始");
         List<BRechargeRecord> rechargeRecords= rechargeService.queryRechargeRecordByStatus(MyConstants.RECHARGE_STATUS_PAYING);

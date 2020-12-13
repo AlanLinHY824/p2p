@@ -31,6 +31,7 @@ public class AliPayController {
                                 @RequestParam("out_trade_no") String out_trade_no, @RequestParam("total_amount") String total_amount,
                               @RequestParam("subject") String subject, @RequestParam(value = "body",required = false) String body,
                                 HttpServletResponse response) throws IOException {
+        System.out.println("这是007的session:"+request.getSession().getId());
         //获得初始化的AlipayClient
         AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
 

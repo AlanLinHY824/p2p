@@ -12,7 +12,7 @@
     <version>1.0.0</version>
     <name>005-p2p-web</name>
     <description>Demo project for Spring Boot</description>
-
+    <packaging>war</packaging>
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -57,11 +57,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-devtools</artifactId>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -96,6 +96,25 @@
             <artifactId>javase</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <!--spring-session-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>2.0.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.fastdfs</groupId>
+            <artifactId>fastdfs</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
 <!--        &lt;!&ndash;日志&ndash;&gt;-->
 <!--        <dependency>-->
@@ -113,6 +132,32 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <resources>
+            <!--mybatis的mapper.xml-->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <!--src/main/resources下的所有配置文件编译到classes下面去-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
+            <resource>
+                <!--源文件位置-->
+                <directory>src/main/webapp</directory>
+                <!--编译到META-INF/resources，该目录不能随便写-->
+                <targetPath>META-INF/resources</targetPath>
+                <includes>
+                    <!--要把哪些文件编译过去，**表示webapp目录及子目录，*.*表示所有-->
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
 </project>

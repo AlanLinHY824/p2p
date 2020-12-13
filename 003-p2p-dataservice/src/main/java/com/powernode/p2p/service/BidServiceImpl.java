@@ -25,7 +25,7 @@ import java.util.List;
  * @Description
  * @Date 2020/10/12
  */
-@Service(interfaceClass = BidService.class,timeout = 20000,version = "1.0.0")
+@Service(interfaceClass = BidService.class,timeout = 20000,version = "1.0.0",retries = 5,weight = 5)
 @Component
 public class BidServiceImpl implements BidService {
 
@@ -71,10 +71,10 @@ public class BidServiceImpl implements BidService {
 //                    }
 //                }
                 try {
-                    //不需要设置数据库的隔离级别为读已提交，因为不存在查询出的version的对比，在更新语句执行的时候等式左边拿到的是最新的version
+                    //不需要设置数据库的隔离级别为读已提交，因为不存在查询出的version的对比，在更新语句执行的时候等式右边拿到的是最新的version（当前读）
                     count = loanInfoMapper.updateLeftMoney(loanId,bLoanInfo.getLeftProductMoney()-bidMoney,bLoanInfo.getVersion());
                     //这种情况下并不需要版本号 sql:update b_loan_info set left_product_money=left_product_money-#{bidMoney} where id=#{loanId} and left_product_money-#{bidMoney}>0
-                    //因为在执行SQL语句时直接判断left_product_money-#{bidMoney}>0，一条DDL语句本身是具有原子性的，不会产生并发问题，在判断余额时不会存在有误的情况
+                    //因为在执行SQL语句时直接判断left_product_money-#{bidMoney}>0，一条DML语句本身是具有原子性的，不会产生并发问题，在判断余额时不会存在有误的情况
 //                    count = loanInfoMapper.updateLeftMoneyRe(loanId,bidMoney,bLoanInfo.getVersion());
                 } catch (Exception e) {
                     throw new ResultException(ResultEnum.INTERNAL_ERRO);

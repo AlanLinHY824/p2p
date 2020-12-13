@@ -23,13 +23,13 @@ import java.util.Map;
 @Controller
 public class IndexController {
 
-    @Reference(interfaceClass = LoanService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = LoanService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private LoanService loanService;
 
-    @Reference(interfaceClass = UserService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = UserService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private UserService userService;
 
-    @Reference(interfaceClass = BidService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = BidService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private BidService bidService;
 
     /**

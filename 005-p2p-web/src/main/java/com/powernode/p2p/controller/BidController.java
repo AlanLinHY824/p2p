@@ -28,10 +28,10 @@ import java.util.*;
  */
 @Controller
 public class BidController {
-    @Reference(interfaceClass = BidService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = BidService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private BidService bidService;
 
-    @Reference(interfaceClass = RedisService.class,timeout = 20000,version = "1.0.0",check = false)
+    @Reference(interfaceClass = RedisService.class,timeout = 20000,version = "1.0.0",check = false,cluster = "failover",loadbalance = "random")
     private RedisService redisService;
 
     @RequestMapping("/bid/invest")

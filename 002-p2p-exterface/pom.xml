@@ -26,6 +26,11 @@
             <artifactId>004-p2p-common</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.2</version>
+        </dependency>
     </dependencies>
 
     <build>

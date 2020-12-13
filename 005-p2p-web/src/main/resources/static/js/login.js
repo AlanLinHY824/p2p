@@ -71,6 +71,9 @@ function login() {
 			loginPassword:$("#loginPassword").val(),
 			captcha:$("#captcha").val()},
 		type:"post",
+		xhrFields: {
+			withCredentials: true //跨域请求必须
+		},
 		success:function (data) {
 			if (data.code==200){
 				// window.location.href="/005-p2p-web/index";
